@@ -1,16 +1,23 @@
 'use client';
+import { ButtonHTMLAttributes, forwardRef } from 'react';
 import styles from '../styles/button.module.scss';
 
 type Props = {
   children: React.ReactNode;
-  onClick: () => void;
-  disabled?: boolean
-};
+} & ButtonHTMLAttributes<HTMLButtonElement>;
 
-export default function Button({ children, onClick, disabled }: Props) {
+const Button = forwardRef<HTMLButtonElement, Props>(({ children, ...rest }, ref) => {
   return (
-    <button className={styles.button} onClick={onClick}  disabled={disabled}>
+    <button
+      ref={ref}
+      className={styles.button}
+      {...rest} 
+    >
       {children}
     </button>
   );
-}
+});
+
+Button.displayName = 'Button';
+
+export default Button;

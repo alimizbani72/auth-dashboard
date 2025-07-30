@@ -11,17 +11,28 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
-    if (storedUser) setUser(JSON.parse(storedUser));
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    } else {
+      setUser(null);
+    }
+    setLoaded(true); 
   }, []);
 
   const value = useMemo(() => ({ user, setUser }), [user]);
 
-  return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
-};
+  if (!loaded) return null;
 
+  return (
+    <UserContext.Provider value={value}>
+      {children}
+    </UserContext.Provider>
+  );
+};
 export const useUser = () => {
   const context = useContext(UserContext);
   if (context === undefined) {
